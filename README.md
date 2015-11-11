@@ -8,8 +8,24 @@
 - Transport: UDP and TCP
 - Application: IRC and DNS
 
+## Usage
 
-## Trace
+### Commands
+
+``` 
+- host <hname>
+- router <rname> <# interfaces>
+- duplex-link <hname | rname.int> <hname | router.int> <band> <latency>
+- ip (<hname> <host_ip> <router_ip> <dns_server_ip> ) |
+     (<hname> <interface> <ip> [[<interface> <ip>] ...] )
+- route <rname> [[<ip> <interface>] ... ] <ip> [[<ip> ...] <interface>
+- performance <rname> <packet_process_time> [[<interface> <bufsize>] ...]
+- (ircc|ircs|dnss) <hname> <app_name>
+- sniffer <hname | rname.int>  <hname | rname.int> "<file_name>"
+- simulate <timestamp> <name> "<command>"
+``` 
+
+### Example Trace
 
 ```
 # Creation of 4 hosts, each having a single interface
@@ -32,7 +48,7 @@ set router r1 3
 #                           (0)\          
 #                               r0(2)--(192.168.3.3)
 #                           (1)/            
-#      h1 -------(10.1.1.1)---'             
+#      h1 -------(10.1.1.2)---´             
 #  (10.1.1.1)          
 #
 #
@@ -42,7 +58,7 @@ set router r1 3
 #                     /(1)
 # (192.168.3.4)--(0)r1
 #                     \(2)
-#                      '-----(192.168.1.2) ----- h3
+#                      `-----(192.168.1.2) ----- h3
 #                                           (192.168.1.1)
 
 # set duplex-link device router.port bandwidth latency
@@ -70,10 +86,10 @@ set ip r0 0 10.0.0.2        1 10.1.1.2      2 192.168.3.3
 set ip r1 0 192.168.3.4     1 192.168.2.3   2 192.168.1.2
 
 # routing configuration
-set route r0 10.0.0.0 0 10.1.1.0 1 192.168.3.0 2 192.168.2.0 \
-             192.168.3.4 192.168.1.0 192.168.3.4
-set route r1 192.168.3.0 0 192.168.2.0 1 192.168.1.0 2 10.0.0.0 \
-             192.168.3.3 10.1.1.0 192.168.3.3
+set route r0 10.0.0.0 0 10.1.1.0 1 192.168.3.0 2 \
+             192.168.2.0 192.168.3.4 192.168.1.0 192.168.3.4
+set route r1 192.168.3.0 0 192.168.2.0 1 192.168.1.0 2 
+             10.0.0.0 192.168.3.3 10.1.1.0 192.168.3.3
 
 # routers processing time configuration
 # <name> <time_to_process a packet> [[<port> <bufsize> ] ... ]

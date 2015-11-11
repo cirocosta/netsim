@@ -10,7 +10,12 @@
 - [Inside](#inside)
   - [`host_t`](#host_t)
   - [`router_t`](#router_t)
-  - [`link_t`](#link_t)
+  - [`interface_t`](#interface_t)
+  - [`addr_t`](#addr_t)
+  - [`ft_t`](#ft_t)
+  - [`event_t`](#event_t)
+  - [`sniffer_t`](#sniffer_t)
+  - [Forwarding](#forwarding)
 - [Usage](#usage)
   - [Commands](#commands)
   - [Example Trace](#example-trace)
@@ -36,11 +41,19 @@ IP mask: `255.255.255.0` (0xffffff00)
 ### `host_t`
 
 ```c
+enum application_e {
+  IRCC,
+  IRCS,
+  DNSS
+};
+
+
 struct host_t { 
   char name[NS_NAME_MAX];
   interface_t interface;
   addr_t router_addr;
   addr_t dns_addr;
+  application_e app;
 };
 ```
 
@@ -51,6 +64,8 @@ struct router_t {
   char name[NS_NAME_MAX];
   interface_t** interfaces;
   uint8_t interfaces_count;
+
+  ft_t* forwarding_table;
 };
 ```
 
@@ -64,27 +79,9 @@ struct interface_t {
 };
 ```
 
-### Forwarding
-
-```
- (forwarding_table, addr) => interface | router addr
-
- ip_mask : interface   -+-
- ip_mask : interface    |
- ip_mask : interface    |  forwarding to router interfaces by masking.
- ip_mask : interface    |
- ip_mask : interface   -+-
-
- ip|ip_mask: router address   -+-
- ip|ip_mask: router address    |  out-the-network forwarding.
- ip|ip_mask: router address    |  given the router addr we know the interface to
- ip|ip_mask: router address    |  send the packet to.
- ip|ip_mask: router address   -+-
-```
-
-Implement a hash table!
-
 ### `addr_t`
+
+Address. Encompasses presentation and numeric form.
 
 ```
 struct addr_t {
@@ -92,6 +89,68 @@ struct addr_t {
   uint32_t n_ip;              // numeric ip      (   0xffffffff  )
 };
 ```
+
+### `ft_t`
+
+Router's Forwarding Table
+
+```c
+struct ft_t {
+  TODO 
+};
+```
+
+### `event_t`
+
+Event that gets into the system (a client performs):
+
+```c
+struct event_t {
+  uint32_t ms;
+  host_t* host;
+  char command[NS_COMMAND_SIZE];
+};
+```
+
+### `sniffer_t`
+
+```c
+struct sniffer_t {
+  FILE* log_file;
+  interface_t* interfaces[2];
+};
+```
+
+### Forwarding
+
+```
+(iforwarding_table, addr) => interface
+
+ip_mask : interface   -+-
+ip_mask : interface    |
+ip_mask : interface    |  forwarding to router interfaces by masking.
+ip_mask : interface    |
+ip_mask : interface   -+-
+
+ip: router address ==> interface  -+-
+ip: router address ==> interface   |  out-the-network forwarding.
+ip: router address ==> interface   |  given the router addr we know the interface to
+ip: router address ==> interface   |  send the packet to.
+ip: router address ==> interface  -+-
+
+  (ps.: at parsing time we're capable of resolving ip router `(address => interface)`
+        and so we only really need an interface forwading table
+```
+
+We know that prefix size will always be 24b (as we're dealing with class C addresses). So, every prefix matching will take form of:
+
+```c
+if (MASK & (addr.n_ip >> 8)) {
+  // do something
+}
+```
+
+The forwarding table is given per-router (and so, it's not shared and different for each of them). They are constructed at parsing time.
 
 ## Usage
 

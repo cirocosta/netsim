@@ -2,11 +2,96 @@
 
 > Network Simulator
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents** 
+
+- [Protocols](#protocols)
+- [Inside](#inside)
+  - [`host_t`](#host_t)
+  - [`router_t`](#router_t)
+  - [`link_t`](#link_t)
+- [Usage](#usage)
+  - [Commands](#commands)
+  - [Example Trace](#example-trace)
+- [Output](#output)
+  - [IP](#ip)
+  - [TCP](#tcp)
+  - [UDP](#udp)
+  - [DNS](#dns)
+  - [IRC](#irc)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Protocols
 
 - Network: IP
 - Transport: UDP and TCP
 - Application: IRC and DNS
+
+## Inside
+
+IP mask: `255.255.255.0` (0xffffff00)
+
+### `host_t`
+
+```c
+struct host_t { 
+  char name[NS_NAME_MAX];
+  interface_t interface;
+  addr_t router_addr;
+  addr_t dns_addr;
+};
+```
+
+### `router_t`
+
+```c
+struct router_t { 
+  char name[NS_NAME_MAX];
+  interface_t** interfaces;
+  uint8_t interfaces_count;
+};
+```
+
+### `interface_t` 
+
+```c
+struct interface_t { 
+  addr_t addr;
+  uint8_t band;               // Mbps
+  uint16_t latency;           // ms
+};
+```
+
+### Forwarding
+
+```
+ (forwarding_table, addr) => interface | router addr
+
+ ip_mask : interface   -+-
+ ip_mask : interface    |
+ ip_mask : interface    |  forwarding to router interfaces by masking.
+ ip_mask : interface    |
+ ip_mask : interface   -+-
+
+ ip|ip_mask: router address   -+-
+ ip|ip_mask: router address    |  out-the-network forwarding.
+ ip|ip_mask: router address    |  given the router addr we know the interface to
+ ip|ip_mask: router address    |  send the packet to.
+ ip|ip_mask: router address   -+-
+```
+
+Implement a hash table!
+
+### `addr_t`
+
+```
+struct addr_t {
+  char p_ip[16];              // presentation ip (255.255.255.255)
+  uint32_t n_ip;              // numeric ip      (   0xffffffff  )
+};
+```
 
 ## Usage
 
@@ -86,6 +171,7 @@ set ip r0 0 10.0.0.2        1 10.1.1.2      2 192.168.3.3
 set ip r1 0 192.168.3.4     1 192.168.2.3   2 192.168.1.2
 
 # routing configuration
+# note: all networks are Class-C
 set route r0 10.0.0.0 0 10.1.1.0 1 192.168.3.0 2 \
              192.168.2.0 192.168.3.4 192.168.1.0 192.168.3.4
 set route r1 192.168.3.0 0 192.168.2.0 1 192.168.1.0 2 
@@ -157,7 +243,4 @@ Just needs to return an IP address for a given name passed to it.
 CONNECT
 USER
 QUIT
-
-
-
 

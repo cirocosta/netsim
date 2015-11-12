@@ -135,7 +135,6 @@ enum application_e {
   DNSS
 };
 
-
 struct host_t { 
   char name[NS_NAME_MAX];
   interface_t interface;
@@ -154,9 +153,31 @@ struct router_t {
   char name[NS_NAME_MAX];
   interface_t** interfaces;
   uint8_t interfaces_count;
+  uint16_t processing_time;   // in us
 
   ft_t* forwarding_table;
 };
+```
+
+#### `link_t`
+
+A link represents a connection between two interfaces. As the simulator only cares about duplex links, `link_t` has two buffers.
+It is a resource that's shared between two interfaces but only between these two.
+One of the buffers is always acquired by a single interface as its write stream. Each buffer is identified by an ID, which is what the interface grabs when trying the `acquire()` the shared resource (and thus, have the permission to write). The process of acquiring one of the link's ends corresponds to the process of 'becoming a producer' in a 'consumer-producer' paradigm.
+
+
+```c
+struct link_t {
+  uint16_t latency;           // ms
+  uint8_t band;               // Mbps
+  unit8_t buffer[2][?];
+
+                                  // sniffer struct provides a
+  sniffer* sniffing_function;     // function to call when actions
+                                  // occur on this link so that we
+                                  // can log them when a sniffer 
+                                  // attaches.
+}
 ```
 
 #### `interface_t` 
@@ -166,8 +187,8 @@ An IP address is technically associated with an interface, rather than with the 
 ```c
 struct interface_t { 
   addr_t addr;
-  uint8_t band;               // Mbps
-  uint16_t latency;           // ms
+  link_t* link;
+  queue_t* packets_queue;
 };
 ```
 
@@ -209,7 +230,9 @@ struct event_t {
 ```c
 struct sniffer_t {
   FILE* log_file;
-  interface_t* interfaces[2];
+  link_t* link;
+
+  sniffer_func* sniffing_function;
 };
 ```
 
@@ -351,6 +374,16 @@ simulate 4.1 irc1 "QUIT"
 simulate 5.0 irc2 "QUIT"
 finish 5.0
 ```
+
+## API
+
+Hosts provide the toplevel API freeing the user from having to deal with segments and datagrams. They just need to care about well formed application-level messages.
+
+```c
+int host_send(host_t* host, addr_t* dest_address,
+              buffer_t* message);
+```
+
 
 ## Output
 

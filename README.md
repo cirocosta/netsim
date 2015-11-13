@@ -17,6 +17,7 @@
   - [System](#system)
     - [`host_t`](#host_t)
     - [`router_t`](#router_t)
+    - [`link_t`](#link_t)
     - [`interface_t`](#interface_t)
     - [`addr_t`](#addr_t)
     - [`ft_t`](#ft_t)
@@ -26,6 +27,7 @@
 - [Usage](#usage)
   - [Commands](#commands)
   - [Example Trace](#example-trace)
+- [API](#api)
 - [Output](#output)
   - [IP](#ip)
   - [TCP](#tcp)
@@ -76,7 +78,7 @@ struct ip_t {
 
   uint32_t src_ip_addr;
   uint32_t dst_ip_addr;
-  uint8_t* data;
+  void* payload;
 };
 
 // provide a const static "intial_state" packet template.
@@ -162,7 +164,9 @@ struct router_t {
 #### `link_t`
 
 A link represents a connection between two interfaces. As the simulator only cares about duplex links, `link_t` has two buffers.
+
 It is a resource that's shared between two interfaces but only between these two.
+
 One of the buffers is always acquired by a single interface as its write stream. Each buffer is identified by an ID, which is what the interface grabs when trying the `acquire()` the shared resource (and thus, have the permission to write). The process of acquiring one of the link's ends corresponds to the process of 'becoming a producer' in a 'consumer-producer' paradigm.
 
 
@@ -170,7 +174,7 @@ One of the buffers is always acquired by a single interface as its write stream.
 struct link_t {
   uint16_t latency;           // ms
   uint8_t band;               // Mbps
-  unit8_t buffer[2][?];
+  ip_t* buffer[2];
 
                                   // sniffer struct provides a
   sniffer* sniffing_function;     // function to call when actions

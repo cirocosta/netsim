@@ -5,18 +5,7 @@
 #define KBRED "\x1B[31;1m"
 #define KRESET "\033[0m"
 
-#define CHECK_RBIT(__var, __pos) ((__var) & (1 << (__pos)))
-#define CHECK_LBIT(__var, __pos) ((__var) & (128 >> (__pos)))
-#define SET_LBIT(__var, __pos)                                                 \
-  do {                                                                         \
-    __var ^= (128 >> __pos);                                                   \
-  } while (0);
-#define SET_RBIT(__var, __pos)                                                 \
-  do {                                                                         \
-    __var ^= (1 << __pos);                                                     \
-  } while (0);
-
-#include "fssim/constants.h"
+#include "netsim/constants.h"
 
 #include <stdlib.h>
 #include <stdint.h>

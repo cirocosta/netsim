@@ -8,7 +8,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
 
+# deps
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+find_package(Threads REQUIRED)
+set(LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+
 # src
+
 add_subdirectory(src/)
 
 # global vars

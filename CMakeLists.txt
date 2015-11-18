@@ -8,6 +8,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 set(INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
 
+add_definitions(-D_REENTRANT)
+
 # deps
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads REQUIRED)

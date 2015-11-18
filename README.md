@@ -131,7 +131,7 @@ IP mask: `255.255.255.0` (0xffffff00)
 #### `host_t`
 
 ```c
-enum application_e {
+enum app_e {
   IRCC,
   IRCS,
   DNSS
@@ -142,7 +142,7 @@ struct host_t {
   interface_t interface;
   addr_t router_addr;
   addr_t dns_addr;
-  application_e app;
+  app_e app;
 };
 ```
 

@@ -12,4 +12,8 @@ typedef struct ns_interface_t {
   /* queue_t* packets_queue; */
 } ns_interface_t;
 
+
+ns_interface_t* ns_interface_create();
+void ns_interface_destroy(ns_interface_t*);
+
 #endif

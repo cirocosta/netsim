@@ -9,4 +9,7 @@ typedef struct ns_addr_t {
   uint32_t n_ip;              // numeric ip      (   0xffffffff  )
 } ns_addr_t;
 
+ns_addr_t* ns_addr_create();
+void ns_addr_destroy(ns_addr_t*);
+
 #endif

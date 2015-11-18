@@ -10,11 +10,13 @@ typedef struct ns_router_t {
   uint8_t interfaces_count;
   uint16_t processing_time;
 
-  // ns_ft_t* forwarding_table;
+  // ns_ft_t forwarding_table;
 
 } ns_router_t;
 
-ns_router_t* ns_router_create();
+const static ns_router_t ns_zeroed_router = { 0 };
+
+ns_router_t* ns_router_create(unsigned interfaces_count);
 void ns_router_destroy(ns_router_t*);
 
 #endif

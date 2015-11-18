@@ -128,6 +128,21 @@ struct dns_t {
 ### System
 IP mask: `255.255.255.0` (0xffffff00)
 
+#### `device_t`
+
+```c
+typedef union ns_dev_u {
+  host_t* host; 
+  router_t* router; 
+} dev_u;
+
+typedef struct ns_device_t {
+  thread_t thread;
+  dev_u dev;
+  device_e type;
+} device_t;
+```
+
 #### `host_t`
 
 ```c
@@ -175,6 +190,9 @@ struct link_t {
   uint16_t latency;           // ms
   uint8_t band;               // Mbps
   ip_t* buffer[2];
+
+  sem_t empty;
+  sem_t full;
 
                                   // sniffer struct provides a
   sniffer* sniffing_function;     // function to call when actions

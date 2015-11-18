@@ -1,0 +1,39 @@
+sudo: false
+language: c
+
+compiler:
+  - clang
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.6
+      - kalakris-cmake
+    packages:
+      - cmake
+      - gcc-4.9
+      - clang-3.6
+      - valgrind
+
+env:
+  - CMAKE_BUILD_TYPE=Debug
+  - CMAKE_BUILD_TYPE=Release
+
+install:
+  - export TZ='America/Sao_Paulo'
+  - if [ "$CC" = "clang" ]; then export CC="clang-3.6"; fi
+  - export CTEST_OUTPUT_ON_FAILURE=1
+  - env | sort
+
+before_script:
+  - mkdir build && cd $_
+  - cmake ..
+  - make
+
+script:
+  - make test
+
+notifications:
+  email: false
+

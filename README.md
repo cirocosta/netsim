@@ -230,8 +230,16 @@ struct addr_t {
 Router's Forwarding Table
 
 ```c
+
+struct ft_entry_t {
+  uint32_t ip_mask;
+  uint8_t mask_length;
+  interface_t* interface;
+};
+
 struct ft_t {
-  TODO 
+  ft_entry_t* entries;
+  uint16_t entries_count;
 };
 ```
 

@@ -21,21 +21,6 @@
 #define __FILENAME__                                                           \
   (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define FREE(__ptr)                                                            \
-  do {                                                                         \
-    free(__ptr);                                                               \
-    __ptr = 0;                                                                 \
-  } while (0)
-
-#define FREE_ARR(__ptr, __count)                                               \
-  do {                                                                         \
-    unsigned __i = 0;                                                          \
-    while (__i < __count)                                                      \
-      free(__ptr[__i++]);                                                      \
-    free(__ptr);                                                               \
-    __ptr = 0;                                                                 \
-  } while (0)
-
 #define LOG(__msg, ...)                                                        \
   do {                                                                         \
     fprintf(stdout, "\n(LOG)\t");                                              \

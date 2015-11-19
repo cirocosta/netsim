@@ -6,7 +6,7 @@
 
 typedef struct ns_router_t {
   char name[NS_NAME_MAX];
-  ns_interface_t** interfaces;
+  ns_interface_t* interfaces;
   uint8_t interfaces_count;
   uint16_t processing_time;
 

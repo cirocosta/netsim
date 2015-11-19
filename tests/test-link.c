@@ -65,12 +65,12 @@ void test3()
   ns_link_t* l1 = ns_link_create();
 
   h0->dev.host->interface.write_link = l1;
-  r1->dev.router->interfaces[0]->read_link = l1;
+  r1->dev.router->interfaces[0].read_link = l1;
 
   fs_thread_create(&h0->thread.tid, NULL, test2_thread0,
                    (void*)h0->dev.host->interface.write_link);
   fs_thread_create(&r1->thread.tid, NULL, test2_thread1,
-                   (void*)r1->dev.router->interfaces[0]->read_link);
+                   (void*)r1->dev.router->interfaces[0].read_link);
 
   fs_thread_join(h0->thread.tid, NULL);
   fs_thread_join(r1->thread.tid, NULL);

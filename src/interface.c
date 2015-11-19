@@ -8,4 +8,12 @@ ns_interface_t* ns_interface_create()
   return interface;
 }
 
-void ns_interface_destroy(ns_interface_t* interface) { free(interface); }
+void ns_interface_destroy(ns_interface_t* interface)
+{
+  if (interface->packet_queue) {
+    free(interface->packet_queue);
+    interface->packet_queue = NULL;
+  }
+
+  free(interface);
+}

@@ -19,5 +19,10 @@ void ns_router_destroy(ns_router_t* router)
   free(router->interfaces);
   router->interfaces = NULL;
 
+  if (router->forwarding_table) {
+    ns_ft_destroy(router->forwarding_table);
+    router->forwarding_table = NULL;
+  }
+
   free(router);
 }

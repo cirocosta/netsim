@@ -189,10 +189,8 @@ One of the buffers is always acquired by a single interface as its write stream.
 struct link_t {
   uint16_t latency;           // ms
   uint8_t band;               // Mbps
-  ip_t* buffer[2];
-
-  sem_t empty;
-  sem_t full;
+  ip_t* buffer;               // data
+  int efd;                    // event file descriptor
 
                                   // sniffer struct provides a
   sniffer* sniffing_function;     // function to call when actions

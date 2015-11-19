@@ -3,15 +3,13 @@
 
 #include "netsim/common.h"
 #include "netsim/ip.h"
-#include <semaphore.h>
+#include <sys/eventfd.h>
 
 typedef struct ns_link_t {
   uint16_t latency; // ms
   uint8_t band;     // Mbps
   ns_ip_t* buffer;  // one at a time
-
-  sem_t empty;
-  sem_t full;
+  int efd;          // event fd
 
   // sniffer struct provides a
   // sniffer* sniffing_function;  // function to call when actions
@@ -21,7 +19,6 @@ typedef struct ns_link_t {
 } ns_link_t;
 
 const static ns_link_t ns_zeroed_link = { 0 };
-
 
 ns_link_t* ns_link_create();
 void ns_link_destroy(ns_link_t*);

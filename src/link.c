@@ -6,36 +6,30 @@ ns_link_t* ns_link_create()
   PASSERT(link, NS_ERR_MALLOC);
 
   *link = ns_zeroed_link;
-
-  PASSERT(sem_init(&link->empty, 0, 1) == 0, "sem_init: ");
-  PASSERT(sem_init(&link->full, 0, 0) == 0, "sem_init: ");
+  link->efd = eventfd(0, EFD_SEMAPHORE);
 
   return link;
 }
 
-void ns_link_destroy(ns_link_t* link)
-{
-  PASSERT(sem_destroy(&link->empty) == 0, "sem_destroy: ");
-  PASSERT(sem_destroy(&link->full) == 0, "sem_destroy: ");
-
-  free(link);
-}
+void ns_link_destroy(ns_link_t* link) { free(link); }
 
 void ns_link_send(ns_link_t* link, ns_ip_t* packet)
 {
-  sem_wait(&link->empty);
+  const static uint64_t inc = 1;
+
+  PASSERT(write(link->efd, &inc, sizeof(uint64_t)) == sizeof(uint64_t),
+          "write efd: ");
   link->buffer = packet;
-  sem_post(&link->full);
 }
 
 ns_ip_t* ns_link_recv(ns_link_t* link)
 {
+  uint64_t u;
   ns_ip_t* tmp;
 
-  sem_wait(&link->full);
+  PASSERT(read(link->efd, &u, sizeof(uint64_t)) == sizeof(uint64_t),
+          "read efd: ");
   tmp = link->buffer;
-  link->buffer = NULL;
-  sem_post(&link->empty);
 
   return tmp;
 }

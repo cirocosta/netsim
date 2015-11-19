@@ -1,5 +1,5 @@
 #ifndef NS__HOST_H
-#define NS__HOST_H 
+#define NS__HOST_H
 
 #include "netsim/common.h"
 #include "netsim/interface.h"
@@ -17,5 +17,7 @@ const static ns_host_t ns_zeroed_host = { 0 };
 
 ns_host_t* ns_host_create();
 void ns_host_destroy(ns_host_t*);
+
+int ns_host_send_pkt(ns_host_t* host, ns_addr_t* dst_addr, ns_ip_t* pkt);
 
 #endif

@@ -128,6 +128,15 @@ struct dns_t {
 ### System
 IP mask: `255.255.255.0` (0xffffff00)
 
+#### `simulator_t`
+
+```c
+struct ns_simulator_t {
+  device_t** devices;
+  unsigned devices_count;
+};
+```
+
 #### `device_t`
 
 ```c

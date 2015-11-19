@@ -16,11 +16,14 @@ typedef struct ns_device_t {
   ns_thread_t thread;
   ns_dev_u dev;
   ns_device_e type;
+
+  uint8_t running;
 } ns_device_t;
 
 const static ns_device_t ns_zeroed_device = { 0 };
 
 ns_device_t* ns_device_create(ns_device_e type, unsigned interfaces_count);
 void ns_device_destroy(ns_device_t*);
+void ns_device_run(ns_device_t*);
 
 #endif

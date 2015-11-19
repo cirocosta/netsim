@@ -49,13 +49,13 @@ void test2()
   h0->dev.host->interface.write_link = l1;
   h1->dev.host->interface.read_link = l1;
 
-  fs_thread_create(&h1->thread.tid, NULL, test2_thread1,
+  ns_thread_create(&h1->thread, NULL, test2_thread1,
                    (void*)h1->dev.host->interface.read_link);
-  fs_thread_create(&h0->thread.tid, NULL, test2_thread0,
+  ns_thread_create(&h0->thread, NULL, test2_thread0,
                    (void*)h0->dev.host->interface.write_link);
 
-  fs_thread_join(h0->thread.tid, NULL);
-  fs_thread_join(h1->thread.tid, NULL);
+  ns_thread_join(&h0->thread, NULL);
+  ns_thread_join(&h1->thread, NULL);
 
   ns_device_destroy(h0);
   ns_device_destroy(h1);
@@ -71,13 +71,13 @@ void test3()
   h0->dev.host->interface.write_link = l1;
   r1->dev.router->interfaces[0].read_link = l1;
 
-  fs_thread_create(&h0->thread.tid, NULL, test2_thread0,
+  ns_thread_create(&h0->thread, NULL, test2_thread0,
                    (void*)h0->dev.host->interface.write_link);
-  fs_thread_create(&r1->thread.tid, NULL, test2_thread1,
+  ns_thread_create(&r1->thread, NULL, test2_thread1,
                    (void*)r1->dev.router->interfaces[0].read_link);
 
-  fs_thread_join(h0->thread.tid, NULL);
-  fs_thread_join(r1->thread.tid, NULL);
+  ns_thread_join(&h0->thread, NULL);
+  ns_thread_join(&r1->thread, NULL);
 
   ns_device_destroy(h0);
   ns_device_destroy(r1);

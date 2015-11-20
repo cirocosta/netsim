@@ -27,7 +27,7 @@ void ns_epoll_add_tick_ev(ns_epoll_t* epoll, int fd);
 
 inline static int ns_epoll_wait(ns_epoll_t* epoll)
 {
-  return epoll_wait(epoll->fd, epoll->events, NS_EPOLL_MAX_EVENTS, -1);
+  return epoll_wait(epoll->fd, epoll->events, epoll->events_count, -1);
 }
 
 #endif

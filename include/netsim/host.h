@@ -7,7 +7,8 @@
 
 typedef struct ns_host_t {
   char name[NS_NAME_MAX];
-  ns_interface_t interface;
+  ns_interface_t* interfaces;
+
   ns_addr_t router_addr;
   ns_addr_t dns_addr;
   ns_app_e app;

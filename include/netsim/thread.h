@@ -4,6 +4,8 @@
 #include <pthread.h>
 #include "netsim/common.h"
 
+typedef void* (*ns_thread_func)(void*);
+
 static void* test2_thread(void* arg)
 {
   LOGERR("LOL!");
@@ -26,7 +28,8 @@ inline static void ns_thread_join(ns_thread_t* thread, void** retval)
   }
 }
 
-inline static void ns_thread_create(ns_thread_t* thread, const pthread_attr_t* attr,
+inline static void ns_thread_create(ns_thread_t* thread,
+                                    const pthread_attr_t* attr,
                                     void* (*start_routine)(void*), void* arg)
 {
   int err;

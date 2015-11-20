@@ -24,7 +24,7 @@ void ns_link_send(ns_link_t* link, ns_ip_t* packet)
 
 ns_ip_t* ns_link_recv(ns_link_t* link)
 {
-  uint64_t u;
+  static uint64_t u;
   ns_ip_t* tmp;
 
   PASSERT(read(link->efd, &u, sizeof(uint64_t)) == sizeof(uint64_t),

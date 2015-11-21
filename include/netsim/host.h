@@ -5,6 +5,7 @@
 #include "netsim/interface.h"
 #include "netsim/addr.h"
 #include "netsim/thread.h"
+#include "netsim/transport.h"
 
 typedef struct ns_host_t {
   char name[NS_NAME_MAX];
@@ -21,6 +22,7 @@ ns_host_t* ns_host_create();
 void ns_host_destroy(ns_host_t*);
 void* ns_host_func(void* arg);
 
-int ns_host_send_pkt(ns_host_t* host, ns_addr_t* dst_addr, ns_ip_t* pkt);
+void ns_host_send_transport_pkt(ns_host_t* host, ns_transport_t* transport,
+                                uint32_t src, uint32_t dst);
 
 #endif

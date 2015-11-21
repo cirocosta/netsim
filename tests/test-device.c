@@ -95,10 +95,51 @@ void test2()
   free(packet1);
 }
 
+/**
+ *
+ *     h1 --------+
+ * (10.0.0.2)     |
+ *                | l1
+ * (10.1.1.2)     |
+ *     h2 --------+
+ *
+ *
+ * test: send udp pkt from h1 to h2
+ */
+void test3()
+{
+  ns_device_t* h1 = ns_device_create(NS_DEVICE_HOST, 2);
+  ns_device_t* h2 = ns_device_create(NS_DEVICE_HOST, 2);
+  ns_link_t* l1 = ns_link_create();
+  ns_transport_t* udp_pkt =
+      ns_transport_create_udp(ns_udp_create(NULL, 8080, 8080));
+
+  ns_device_init_interface(h1, 0, NULL, l1);
+  ns_device_init_interface(h2, 0, l1, NULL);
+
+  ns_device_run(h1);
+  ns_device_run(h2);
+  nanosleep(&sleep_time, NULL);
+
+  ns_host_send_transport_pkt(h1->dev.host, udp_pkt, ns_pton("10.0.0.2"),
+                             ns_pton("10.1.1.2"));
+  nanosleep(&sleep_time, NULL);
+
+  ns_device_terminate(h1);
+  ns_device_terminate(h2);
+  ns_thread_join(&h1->thread, NULL);
+  ns_thread_join(&h2->thread, NULL);
+
+  ns_link_destroy(l1);
+  ns_device_destroy(h1);
+  ns_device_destroy(h2);
+}
+
 int main(int argc, char* argv[])
 {
   TEST(test1, "Sending packages to devices' interfaces' buffers");
   TEST(test2, "");
+  TEST(test3, "");
 
   return 0;
 }

@@ -4,8 +4,6 @@
 #include <pthread.h>
 #include "netsim/common.h"
 
-typedef void* (*ns_thread_func)(void*);
-
 static void* test2_thread(void* arg)
 {
   LOGERR("LOL!");

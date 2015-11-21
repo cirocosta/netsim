@@ -52,8 +52,10 @@ void* ns_host_func(void* arg)
 
         case NS_EV_LINK:
           pkt = ns_link_recv(host->interfaces[0].read_link);
-          // process the packet --> 
+          LOGERR("pkt came!");
+          // process the packet -->
           //  pass it to the transport layer
+          ns_ip_destroy(pkt);
           break;
 
         default:
@@ -63,4 +65,11 @@ void* ns_host_func(void* arg)
   }
 
   pthread_exit(NULL);
+}
+
+void ns_host_send_transport_pkt(ns_host_t* host, ns_transport_t* transport,
+                                uint32_t src, uint32_t dst)
+{
+  ns_ip_t* pkt = ns_ip_create(transport, src, dst);
+  ns_link_send(host->interfaces[0].write_link, pkt);
 }

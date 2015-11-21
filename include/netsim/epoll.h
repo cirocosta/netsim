@@ -7,8 +7,6 @@
 #include <sys/epoll.h>
 #include <sys/signal.h>
 
-#define NS_EPOLL_MAX_EVENTS 10
-
 typedef struct ns_epoll_t {
   struct epoll_event* events;
   unsigned events_count;

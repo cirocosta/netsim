@@ -9,17 +9,14 @@ const static struct timespec sleep_time = {.tv_sec = 0,
  *              l1
  *     h1 -------------+
  * (10.0.0.2)          |  (10.0.0.1)
- *                     r1 
+ *                     r1
  * (10.1.1.2)          |  (10.1.1.1)
  *     h2 -------------+
  *             l2
  *
  * test: send a package from h1 to h2
  */
-void test2()
-{
-}
-
+void test2() {}
 
 /**
  *            interface1  interface2
@@ -32,6 +29,7 @@ void test1()
   ns_link_t* l2 = ns_link_create();
   ns_ip_t* packet1 = malloc(sizeof(*packet1));
   ns_ip_t* packet2 = malloc(sizeof(*packet2));
+  ns_router_t* router = r1->dev.router;
 
   ns_device_init_interface(r1, 0, l1, NULL);
   ns_device_init_interface(r1, 1, l2, NULL);
@@ -41,6 +39,9 @@ void test1()
   ns_link_send(l1, packet1);
   ns_link_send(l2, packet2);
   nanosleep(&sleep_time, NULL);
+
+/*   ASSERT(ns_queue_front(router->interfaces[0].packet_queue) == packet1, ""); */
+/*   ASSERT(ns_queue_front(router->interfaces[1].packet_queue) == packet2, ""); */
 
   ns_device_terminate(r1);
   ns_thread_join(&r1->thread, NULL);

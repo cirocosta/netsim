@@ -7,6 +7,7 @@
 #include "netsim/thread.h"
 #include "netsim/epoll.h"
 #include "netsim/ev.h"
+#include "netsim/table.h"
 
 struct ns_device_t;
 

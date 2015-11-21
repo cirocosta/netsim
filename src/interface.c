@@ -11,7 +11,7 @@ ns_interface_t* ns_interface_create()
 void ns_interface_destroy(ns_interface_t* interface)
 {
   if (interface->packet_queue) {
-    free(interface->packet_queue);
+    ns_queue_destroy(interface->packet_queue);
     interface->packet_queue = NULL;
   }
 

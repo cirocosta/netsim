@@ -40,8 +40,8 @@ void test1()
   ns_link_send(l2, packet2);
   nanosleep(&sleep_time, NULL);
 
-/*   ASSERT(ns_queue_front(router->interfaces[0].packet_queue) == packet1, ""); */
-/*   ASSERT(ns_queue_front(router->interfaces[1].packet_queue) == packet2, ""); */
+  ASSERT(ns_queue_front(router->interfaces[0].packet_queue) == packet1, "");
+  ASSERT(ns_queue_front(router->interfaces[1].packet_queue) == packet2, "");
 
   ns_device_terminate(r1);
   ns_thread_join(&r1->thread, NULL);

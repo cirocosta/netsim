@@ -8,6 +8,7 @@
 #include "netsim/router.h"
 #include "netsim/epoll.h"
 #include <sys/eventfd.h>
+#include "netsim/table.h"
 
 typedef union ns_dev_u {
   ns_host_t* host;
@@ -19,6 +20,8 @@ typedef struct ns_device_t {
   ns_dev_u dev;
   ns_device_e type;
   ns_epoll_t* epoll;
+
+  ns_table_t* fd_table;
 
   int term_fd;
   int tick_fd;

@@ -7,7 +7,6 @@
 typedef struct ns_ev_t {
   ns_ev_e type;
   int fd;
-  ns_link_t* link;
 } ns_ev_t;
 
 #endif

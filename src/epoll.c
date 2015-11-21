@@ -38,7 +38,6 @@ void ns_epoll_add_link_ev(ns_epoll_t* epoll, ns_link_t* link, int fd,
   ns_ev_t* ev = &epoll->evs[epoll->n++];
 
   ev->type = NS_EV_LINK;
-  ev->link = link;
   ev->fd = fd;
 
   event.data.ptr = (void*)ev;
@@ -56,7 +55,6 @@ void ns_epoll_add_term_ev(ns_epoll_t* epoll, int fd)
   ns_ev_t* ev = &epoll->evs[epoll->n++];
 
   ev->type = NS_EV_TERM;
-  ev->link = NULL;
   ev->fd = fd;
 
   event.data.ptr = (void*)ev;
@@ -74,7 +72,6 @@ void ns_epoll_add_tick_ev(ns_epoll_t* epoll, int fd)
   ns_ev_t* ev = &epoll->evs[epoll->n++];
 
   ev->type = NS_EV_TICK;
-  ev->link = NULL;
   ev->fd = fd;
 
   event.data.ptr = (void*)ev;

@@ -24,6 +24,8 @@ ns_device_t* ns_device_create(ns_device_e type, unsigned interfaces_count)
   ns_epoll_add_term_ev(device->epoll, device->term_fd);
   ns_epoll_add_tick_ev(device->epoll, device->tick_fd);
 
+  device->fd_table = ns_table_create(interfaces_count * 2);
+
   return device;
 }
 
@@ -42,6 +44,7 @@ void ns_device_destroy(ns_device_t* device)
 
   ns_epoll_destroy(device->epoll);
   device->epoll = NULL;
+  ns_table_destroy(device->fd_table);
 
   free(device);
 }
@@ -74,12 +77,16 @@ void ns_device_init_interface(ns_device_t* device, uint8_t interface_num,
     ns_epoll_add_link_ev(device->epoll, interfaces[interface_num].read_link,
                          interfaces[interface_num].read_link->efd,
                          EPOLLIN | EPOLLET);
+    ns_table_add(device->fd_table, interfaces[interface_num].read_link->efd,
+                 &interfaces[interface_num]);
   }
 
   if (write_link) {
     ns_epoll_add_link_ev(device->epoll, interfaces[interface_num].write_link,
                          interfaces[interface_num].write_link->efd,
                          EPOLLOUT | EPOLLET);
+    ns_table_add(device->fd_table, interfaces[interface_num].write_link->efd,
+                 &interfaces[interface_num]);
   }
 }
 

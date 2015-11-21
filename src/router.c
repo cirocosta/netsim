@@ -47,8 +47,11 @@ void* ns_router_func(void* arg)
   struct ns_device_t* device = (struct ns_device_t*)arg;
   ns_ev_t* ev = NULL;
   ns_ip_t* pkt;
+  ns_interface_t* interface;
   uint8_t should_stop = 0;
   int n;
+
+  ns_table_init(device->fd_table);
 
   while (!should_stop) {
     n = ns_epoll_wait(device->epoll);
@@ -75,8 +78,9 @@ void* ns_router_func(void* arg)
           break;
 
         case NS_EV_LINK:
-          pkt = ns_link_recv(ev->link);
-          /* ns_queue_insert(ev->interface->packet_queue, pkt); */
+          interface = ns_table_get(device->fd_table, ev->fd);
+          pkt = ns_link_recv(interface->read_link);
+          ns_queue_insert(interface->packet_queue, pkt);
           break;
 
         default:

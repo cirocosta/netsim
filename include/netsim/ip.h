@@ -33,7 +33,7 @@ inline static ns_ip_t* ns_ip_create(ns_transport_t* transport_pkt, uint32_t src,
   *ip = ns_zeroed_ip;
 
   ip->src_ip_addr = src;
-  ip->dst_ip_addr = src;
+  ip->dst_ip_addr = dst;
   ip->payload = transport_pkt;
 
   ip->upper_layer_protocol = transport_pkt->type == NS_TRANSPORT_TCP

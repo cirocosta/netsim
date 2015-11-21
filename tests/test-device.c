@@ -108,8 +108,8 @@ void test2()
  */
 void test3()
 {
-  ns_device_t* h1 = ns_device_create(NS_DEVICE_HOST, 2);
-  ns_device_t* h2 = ns_device_create(NS_DEVICE_HOST, 2);
+  ns_device_t* h1 = ns_device_create(NS_DEVICE_HOST, 1);
+  ns_device_t* h2 = ns_device_create(NS_DEVICE_HOST, 1);
   ns_link_t* l1 = ns_link_create();
   ns_transport_t* udp_pkt =
       ns_transport_create_udp(ns_udp_create(NULL, 8080, 8080));
@@ -135,11 +135,77 @@ void test3()
   ns_device_destroy(h2);
 }
 
+/**
+ *              l1
+ *     h1 -------------+
+ * (10.0.0.2)       [0]|  (10.0.0.1)
+ *                     r1
+ * (10.1.1.2)       [1]|  (10.1.1.1)
+ *     h2 -------------+
+ *             l2
+ *
+ * +-----------+
+ * |   pkt     |
+ * |travelling |  h1 --> l1 --> r1 --> l2 --> h2
+ * |   path    |
+ * +-----------+
+ */
+void test4()
+{
+  ns_device_t* h1 = ns_device_create(NS_DEVICE_HOST, 1);
+  ns_device_t* h2 = ns_device_create(NS_DEVICE_HOST, 1);
+  ns_device_t* r1 = ns_device_create(NS_DEVICE_ROUTER, 2);
+  ns_link_t* l1 = ns_link_create();
+  ns_link_t* l2 = ns_link_create();
+  ns_router_t* router = r1->dev.router;
+
+  ns_transport_t* udp_pkt =
+      ns_transport_create_udp(ns_udp_create(NULL, 8080, 8080));
+
+  ns_device_init_interface(h1, 0, NULL, l1);
+  ns_device_init_interface(r1, 0, l1, NULL);
+  ns_device_init_interface(r1, 1, NULL, l2);
+  ns_device_init_interface(h2, 0, l2, NULL);
+
+  ns_device_run(r1);
+  ns_device_run(h1);
+  ns_device_run(h2);
+  nanosleep(&sleep_time, NULL);
+
+  ns_router_init_ft(router, 2);
+
+  ns_ft_add_entry(router->forwarding_table, "10.0.0.0", 8,
+                  &router->interfaces[0]);
+  ns_ft_add_entry(router->forwarding_table, "10.1.1.0", 8,
+                  &router->interfaces[1]);
+  nanosleep(&sleep_time, NULL);
+
+  ns_host_send_transport_pkt(h1->dev.host, udp_pkt, ns_pton("10.0.0.2"),
+                             ns_pton("10.1.1.2"));
+  nanosleep(&sleep_time, NULL);
+  ns_device_tick(r1);
+  nanosleep(&sleep_time, NULL);
+
+  ns_device_terminate(h1);
+  ns_device_terminate(h2);
+  ns_device_terminate(r1);
+  ns_thread_join(&h1->thread, NULL);
+  ns_thread_join(&h2->thread, NULL);
+  ns_thread_join(&r1->thread, NULL);
+
+  ns_link_destroy(l1);
+  ns_link_destroy(l2);
+  ns_device_destroy(h1);
+  ns_device_destroy(r1);
+  ns_device_destroy(h2);
+}
+
 int main(int argc, char* argv[])
 {
-  TEST(test1, "Sending packages to devices' interfaces' buffers");
-  TEST(test2, "");
-  TEST(test3, "");
+  /* TEST(test1, "Sending packages to devices' interfaces' buffers"); */
+  /* TEST(test2, ""); */
+  /* TEST(test3, "hh - udp packet directly to another host"); */
+  TEST(test4, "hrh - udp packet through router to host");
 
   return 0;
 }

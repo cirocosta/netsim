@@ -82,15 +82,18 @@ void* ns_router_func(void* arg)
               continue;
 
             pkt = ns_queue_front(router->interfaces[i].packet_queue);
-            link = ns_ft_forward(router->forwarding_table, pkt->dst_ip_addr)
-                       ->write_link;
-            ns_link_send(link, pkt);
+            interface =
+                ns_ft_forward(router->forwarding_table, pkt->dst_ip_addr);
+            ns_link_send(interface->write_link, pkt);
           }
+
           break;
 
         case NS_EV_LINK:
           interface = ns_table_get(device->fd_table, ev->fd);
           pkt = ns_link_recv(interface->read_link);
+
+          // TODO if full, drop the packet
           ns_queue_insert(interface->packet_queue, pkt);
           break;
 

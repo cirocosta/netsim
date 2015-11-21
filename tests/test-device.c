@@ -202,9 +202,9 @@ void test4()
 
 int main(int argc, char* argv[])
 {
-  /* TEST(test1, "Sending packages to devices' interfaces' buffers"); */
-  /* TEST(test2, ""); */
-  /* TEST(test3, "hh - udp packet directly to another host"); */
+  TEST(test1, "Sending packages to devices' interfaces' buffers");
+  TEST(test2, "");
+  TEST(test3, "hh - udp packet directly to another host");
   TEST(test4, "hrh - udp packet through router to host");
 
   return 0;

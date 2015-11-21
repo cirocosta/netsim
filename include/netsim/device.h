@@ -37,5 +37,6 @@ void ns_device_init_interface(ns_device_t* device, uint8_t interface_num,
 
 void ns_device_run(ns_device_t* device);
 void ns_device_terminate(ns_device_t* device);
+void ns_device_tick(ns_device_t* device);
 
 #endif

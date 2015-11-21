@@ -34,17 +34,9 @@ void test1()
   ns_interface_t i1 = { 0 };
   ns_interface_t i2 = { 0 };
 
-  ft->entries[0].ip_mask = ns_pton("10.0.0.0");
-  ft->entries[0].mask_length = 8;
-  ft->entries[0].interface = &i0;
-
-  ft->entries[1].ip_mask = ns_pton("10.1.1.0");
-  ft->entries[1].mask_length = 8;
-  ft->entries[1].interface = &i1;
-
-  ft->entries[2].ip_mask = ns_pton("198.162.3.0");
-  ft->entries[2].mask_length = 8;
-  ft->entries[2].interface = &i2;
+  ns_ft_add_entry(ft, "10.0.0.0", 8, &i0);
+  ns_ft_add_entry(ft, "10.1.1.0", 8, &i1);
+  ns_ft_add_entry(ft, "198.162.3.0", 8, &i2);
 
   ASSERT(ns_ft_forward(ft, ns_pton("10.0.0.20")) != NULL, "");
   ASSERT(ns_ft_forward(ft, ns_pton("10.0.0.20")) == &i0, "");
@@ -56,7 +48,7 @@ void test1()
 
 int main(int argc, char* argv[])
 {
-  TEST(test1, "");
+  TEST(test1, "performs basic forwarding based on ip masking correctly");
 
   return 0;
 }

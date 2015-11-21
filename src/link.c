@@ -30,6 +30,7 @@ ns_ip_t* ns_link_recv(ns_link_t* link)
   PASSERT(read(link->efd, &u, sizeof(uint64_t)) == sizeof(uint64_t),
           "read efd: ");
   tmp = link->buffer;
+  link->buffer = NULL;
 
   return tmp;
 }

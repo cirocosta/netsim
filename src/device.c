@@ -56,7 +56,7 @@ void ns_device_run(ns_device_t* device)
       ns_thread_create(&device->thread, NULL, ns_router_func, (void*)device);
       break;
     case NS_DEVICE_HOST:
-      ASSERT(0, "Not Supported!");
+      ns_thread_create(&device->thread, NULL, ns_host_func, (void*)device);
       break;
   }
 

@@ -21,4 +21,12 @@ typedef enum ns_ev_e {
   NS_EV_TICK
 } ns_ev_e;
 
+typedef enum ns_transport_e { 
+  NS_TRANSPORT_TCP = 1,
+  NS_TRANSPORT_UDP
+} ns_transport_e;
+
+#define NS_NUMBER_TCP_PROTOCOL 6
+#define NS_NUMBER_UDP_PROTOCOL 17
+
 #endif
